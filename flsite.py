@@ -1,15 +1,17 @@
-from flask import Flask
+from flask import Flask, render_template
+import json
 app = Flask(__name__)
 
-# create representation (client request handlers)
 
+menu = ['Instalation', 'First Application', 'Feedback' ]
 @app.route("/")
 def index():
-    return "index"
+    return render_template ('index.html', menu=menu)
 
 @app.route("/about")
 def about():
-    return "<h1>about site</h1>"
+    return render_template('about.html', title='About site', menu=menu)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
