@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, flash
+from flask import Flask, render_template, url_for, request, flash, session, redirect, abort
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'LAGPUdfljjnjr021sdkjhs'
@@ -27,6 +27,26 @@ def contact():
             flash('Send error', category='error')
 
     return render_template('contact.html', title='Feedback', menu=menu)
+
+@app.route("/profile/<username>")
+def profile(username):
+    if 'userLogger' not in session or session ['userLogger'] != username:
+        abort(401)
+    return f"User profile: {username}"
+
+@app.route("/login", methods=["POST", "GET"])
+def login():
+    if 'userLogger' in session:
+        return redirect(url_for('profile', username=session['userLogger']))
+    elif request.method == "POST" and request.form['username'] == "fratercula" and request.form['psw'] == "1991":
+        session['userLogger'] = request.form['username']
+        return redirect(url_for('profile', username=session['userLogger']))
+    return render_template('login.html', title='Login', menu=menu)
+
+
+@app.errorhandler(404)
+def pageNotFound(error):
+    return render_template('page404.html', title='Page Not Found', menu=menu), 404
 
 # web server
 if __name__ == "__main__":
