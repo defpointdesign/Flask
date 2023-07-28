@@ -1,6 +1,7 @@
-from flask import Flask, render_template, url_for, request
+from flask import Flask, render_template, url_for, request, flash
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'LAGPUdfljjnjr021sdkjhs'
 
 menu =[{"name": "Installation", "url": "install-flask"},
        {"name": "First Application", "url": "first-app"},
@@ -20,7 +21,11 @@ def about():
 def contact():
     # checking request POST
     if request.method == 'POST':
-        print(request.form['username'])
+        if len(request.form['username']) > 2:
+            flash('Message send',category='success')
+        else:
+            flash('Send error', category='error')
+
     return render_template('contact.html', title='Feedback', menu=menu)
 
 # web server
